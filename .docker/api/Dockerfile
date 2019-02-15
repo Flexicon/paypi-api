@@ -8,9 +8,17 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN apt-get update && \
     apt-get install -y \
+    nano \
+    htop \
+    git \
+    zip \
+    unzip \
+    zlib1g-dev \
+    wget \
     mysql-client
 
 RUN docker-php-ext-install \
+    zip \
     pdo_mysql
 
 ENV APP_ENV=dev
@@ -21,4 +29,5 @@ RUN composer global require hirak/prestissimo
 
 # configure Apache
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN a2enmod rewrite
 RUN rm -r /var/www/html && ln -s /app /var/www/html
