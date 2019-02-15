@@ -1,14 +1,14 @@
 version: '3'
 
 services:
-  api:
+  php:
     build:
       context: ./api
     ports:
       - '${API_WEB_PORT}:80'
     volumes:
-      # - ../:/app # For linux based setups
-      - paypi-api-sync:/app:nocopy # For macOS
+      - ../:/app # For linux based setups
+#      - paypi-api-sync:/app:nocopy # For macOS
     depends_on:
       - db
 
@@ -25,6 +25,6 @@ services:
       MYSQL_PASSWORD: pass
 
 volumes:
-  paypi-api-sync: # Comment this volume out for linux based setups
-    external: true
+#  paypi-api-sync: # Comment this volume out for linux based setups
+#    external: true
   mysql: ~
