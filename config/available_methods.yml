@@ -1,0 +1,59 @@
+parameters:
+  available_methods:
+    - name: 'paypal'
+      label: 'PayPal'
+      types:
+        - 'deposit'
+        - 'withdraw'
+      additionalData:
+        - name: 'username'
+          label: 'User name'
+          type: 'text'
+          required: true
+        - name: 'password'
+          label: 'Password'
+          type: 'password'
+          required: true
+
+    - name: 'cashlib'
+      label: 'Cashlib'
+      types:
+        - 'deposit'
+      additionalData:
+        - name: 'voucher_code'
+          label: 'Voucher Code'
+          type: 'text'
+          required: true
+
+    - name: 'visa'
+      label: 'VISA'
+      types:
+        - 'deposit'
+        - 'withdraw'
+      additionalData:
+        - name: 'card_number'
+          label: 'Card number'
+          type: 'text'
+          required: true
+        - name: 'cvv'
+          label: 'CVV'
+          type: 'text'
+          required: true
+        - name: 'cardholder'
+          label: 'Card holder name'
+          type: 'text'
+          required: true
+
+    - name: 'entercash'
+      label: 'Bank withdrawals'
+      types:
+        - 'withdraw'
+      additionalData:
+        - name: 'iban'
+          label: 'IBAN'
+          type: 'text'
+          required: true
+        - name: 'bic'
+          label: 'SWIFT/BIN'
+          type: 'text'
+          required: true
