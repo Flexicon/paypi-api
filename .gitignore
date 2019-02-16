@@ -12,3 +12,8 @@
 /.docker/.docker-sync/
 /.docker/docker-compose.yml
 /.docker/.env
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
