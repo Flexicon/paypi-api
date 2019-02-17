@@ -2,6 +2,7 @@
 
 namespace App\DTO\Request;
 
+use App\Validator\Constraints as AppAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class TransactionRequestDTO
@@ -17,6 +18,7 @@ final class TransactionRequestDTO
     /**
      * @Assert\NotBlank
      * @Assert\Length(max=10)
+     * @AppAssert\MethodTypes
      *
      * @var string
      */

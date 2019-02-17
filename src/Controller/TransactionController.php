@@ -35,18 +35,16 @@ class TransactionController extends AbstractController
      */
     public function create(Request $request, FormErrorResponseBuilder $errorResponseBuilder)
     {
-        $form = $this->createForm(TransactionType::class);
         $data = $request->request->all();
 
+        $form = $this->createForm(TransactionType::class);
         $form->submit($data);
 
-        if ($form->isValid()) {
-            dump($form->getData());
-            return $this->json(['message' => 'form valid!']);
+        if (!$form->isValid()) {
+            $errors = $errorResponseBuilder->build($form);
+            return $this->json(['validation_messages' => $errors], Response::HTTP_BAD_REQUEST);
         }
 
-        $errors = $errorResponseBuilder->build($form);
-
-        return $this->json(['validation_messages' => $errors], Response::HTTP_BAD_REQUEST);
+        return $this->json(['message' => 'form valid!']);
     }
 }
