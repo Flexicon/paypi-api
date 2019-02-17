@@ -12,10 +12,11 @@ final class FormErrorResponseBuilder
      * Reads FormInterface errors and builds an associative array of fields and error messages
      *
      * @param FormInterface $form
+     * @param bool $isTopLevel
      *
      * @return array
      */
-    public function build(FormInterface $form)
+    public function build(FormInterface $form, bool $isTopLevel = false)
     {
         $errorFields = [];
 
@@ -35,6 +36,10 @@ final class FormErrorResponseBuilder
             if (count($errorMessages) > 0) {
                 $errorFields[$field->getName()] = $errorMessages;
             }
+        }
+
+        if ($isTopLevel) {
+            return ['validation_messages' => $errorFields];
         }
 
         return $errorFields;

@@ -39,7 +39,15 @@ services:
     arguments:
       - '%available_methods%'
 
+  app.transaction.dto_factory:
+    class: App\DTOFactory\Response\TransactionResponseDTOFactory
+
   App\Controller\MethodsController:
     class: App\Controller\MethodsController
     arguments:
       - '@app.methods_provider'
+
+  App\Controller\TransactionController:
+    class: App\Controller\TransactionController
+    arguments:
+      - '@app.transaction.dto_factory'

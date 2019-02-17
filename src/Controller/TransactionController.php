@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\DTOFactory\DTOFactory;
 use App\Form\TransactionType;
+use App\Repository\TransactionRepository;
 use App\Services\FormErrorResponseBuilder;
+use App\Services\TransactionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,12 +19,25 @@ use Symfony\Component\Routing\Annotation\Route;
 class TransactionController extends AbstractController
 {
     /**
+     * @var DTOFactory
+     */
+    private $responseDTOFactory;
+
+    public function __construct(DTOFactory $responseDTOFactory)
+    {
+        $this->responseDTOFactory = $responseDTOFactory;
+    }
+
+    /**
      * @Route(name="list", methods={"GET"})
      */
-    public function list()
+    public function list(TransactionRepository $transactionRepository)
     {
+        $transactions = $transactionRepository->findAll();
+        $dtos = $this->responseDTOFactory->createDTOs($transactions);
+
         return $this->json([
-            'data' => [],
+            'data' => $dtos,
         ]);
     }
 
@@ -30,10 +46,17 @@ class TransactionController extends AbstractController
      *
      * @param Request $request
      * @param FormErrorResponseBuilder $errorResponseBuilder
+     * @param TransactionService $transactionService
      *
      * @return JsonResponse
+     *
+     * @throws \Doctrine\ORM\ORMException
      */
-    public function create(Request $request, FormErrorResponseBuilder $errorResponseBuilder)
+    public function create(
+        Request $request,
+        FormErrorResponseBuilder $errorResponseBuilder,
+        TransactionService $transactionService
+    )
     {
         $data = $request->request->all();
 
@@ -41,10 +64,12 @@ class TransactionController extends AbstractController
         $form->submit($data);
 
         if (!$form->isValid()) {
-            $errors = $errorResponseBuilder->build($form);
-            return $this->json(['validation_messages' => $errors], Response::HTTP_BAD_REQUEST);
+            return $this->json($errorResponseBuilder->build($form, true), Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->json(['message' => 'form valid!']);
+        $transaction = $transactionService->createTransaction($form->getData());
+        $dto = $this->responseDTOFactory->createSingleDTO($transaction);
+
+        return $this->json($dto, Response::HTTP_OK);
     }
 }

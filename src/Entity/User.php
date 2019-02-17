@@ -34,7 +34,7 @@ class User
     private $gender;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $email;
 
@@ -65,6 +65,7 @@ class User
 
     /**
      * @ORM\Column(type="datetime")
+     * @var \DateTime
      */
     private $birthday;
 

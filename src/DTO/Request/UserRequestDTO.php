@@ -82,7 +82,7 @@ final class UserRequestDTO
      * @Assert\NotBlank
      * @Assert\Date
      *
-     * @var string
+     * @var \DateTime
      */
     private $birthday;
 
@@ -267,19 +267,19 @@ final class UserRequestDTO
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
-    public function getBirthday(): ?string
+    public function getBirthday(): ?\DateTime
     {
         return $this->birthday;
     }
 
     /**
-     * @param string $birthday
+     * @param \DateTime $birthday
      *
      * @return self
      */
-    public function setBirthday($birthday): self
+    public function setBirthday(\DateTime $birthday): self
     {
         $this->birthday = $birthday;
 
