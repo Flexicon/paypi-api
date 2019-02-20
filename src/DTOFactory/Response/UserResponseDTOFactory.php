@@ -9,6 +9,8 @@ use App\Entity\User;
 
 class UserResponseDTOFactory implements DTOFactory
 {
+    const DATE_FORMAT = 'Y-m-d G:i:s';
+
     /**
      * @param User[] $data
      *
@@ -47,7 +49,7 @@ class UserResponseDTOFactory implements DTOFactory
             $user->getState(),
             $user->getZip(),
             $user->getCountryCode(),
-            $user->getBirthday()->format('Y-m-d')
+            $user->getBirthday()->format(self::DATE_FORMAT)
         );
     }
 }

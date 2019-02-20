@@ -279,7 +279,7 @@ final class UserRequestDTO
      *
      * @return self
      */
-    public function setBirthday(\DateTime $birthday): self
+    public function setBirthday($birthday): self
     {
         $this->birthday = $birthday;
 

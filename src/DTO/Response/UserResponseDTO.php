@@ -2,83 +2,59 @@
 
 namespace App\DTO\Response;
 
-use Symfony\Component\Serializer\Annotation\Groups;
-
 final class UserResponseDTO
 {
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var int
      */
     private $id;
 
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var string
      */
     private $firstName;
 
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var string
      */
     private $lastName;
 
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var string
      */
     private $gender;
 
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var string
      */
     private $email;
 
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var string
      */
     private $address;
 
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var string
      */
     private $city;
 
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var string
      */
     private $state;
 
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var string
      */
     private $zip;
 
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var string
      */
     private $countryCode;
 
     /**
-     * @Groups({"transaction.item"})
-     *
      * @var string
      */
     private $birthday;
