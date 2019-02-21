@@ -37,7 +37,7 @@ class TransactionController extends AbstractController
      *
      * @Rest\QueryParam(name="limit", requirements="\d+", default="10")
      * @Rest\QueryParam(name="page", requirements="\d+", default="1")
-     * @Rest\QueryParam(name="order", requirements="[a-z]+_[A-Z]{3,4}", default="id_ASC")
+     * @Rest\QueryParam(name="order", requirements="[a-zA-Z]+_[A-Z]{3,4}", default="id_ASC")
      * @Rest\QueryParam(name="filter", requirements=@Constraints\FilterStatus, nullable=true)
      *
      * @param int $limit
