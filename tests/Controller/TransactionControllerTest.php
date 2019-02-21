@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Dictionary\TransactionStatusDictionary;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TransactionControllerTest extends WebTestCase
@@ -62,6 +63,21 @@ class TransactionControllerTest extends WebTestCase
         $this->assertAttributeEquals('1', 'limit', $res->pagination);
         $this->assertObjectHasAttribute('data', $res);
         $this->assertCount(1, $res->data);
+    }
+
+    public function testListActionResultsCanBeFiltered()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', self::ENDPOINT . '?filter=' . TransactionStatusDictionary::SUCCESS);
+
+        $res = json_decode($client->getResponse()->getContent());
+
+        $this->assertObjectHasAttribute('data', $res);
+
+        foreach ($res->data as $item) {
+            $this->assertAttributeEquals(TransactionStatusDictionary::SUCCESS, 'status', $item);
+        }
     }
 
     public function testCreateActionReturnsValidationErrorOnEmptyPOST()

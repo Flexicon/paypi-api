@@ -21,6 +21,6 @@ class MethodsControllerTest extends WebTestCase
         $this->assertObjectHasAttribute('name', $res[0]);
         $this->assertObjectHasAttribute('label', $res[0]);
         $this->assertObjectHasAttribute('types', $res[0]);
-        $this->assertObjectHasAttribute('additionalData', $res[0]);
+        $this->assertObjectHasAttribute('additional_data', $res[0]);
     }
 }
