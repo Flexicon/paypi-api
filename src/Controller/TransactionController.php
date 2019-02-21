@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\DTO\Request\ListFiltersDTO;
+use App\DTO\Response\ListResponseDTO;
+use App\DTO\Response\PaginationResponseDTO;
 use App\DTOFactory\DTOFactory;
 use App\Form\TransactionType;
-use App\Repository\TransactionRepository;
 use App\Services\FormErrorResponseBuilder;
 use App\Services\TransactionService;
+use App\Validator\Constraints;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,11 +38,13 @@ class TransactionController extends AbstractController
      * @Rest\QueryParam(name="limit", requirements="\d+", default="10")
      * @Rest\QueryParam(name="page", requirements="\d+", default="1")
      * @Rest\QueryParam(name="order", requirements="[a-z]+_[A-Z]{3,4}", default="id_ASC")
+     * @Rest\QueryParam(name="filter", requirements=@Constraints\FilterStatus, nullable=true)
      *
      * @param int $limit
      * @param int $page
      * @param string $order
-     * @param TransactionRepository $transactionRepository
+     * @param string $filter
+     * @param TransactionService $transactionService
      *
      * @return JsonResponse
      */
@@ -47,23 +52,18 @@ class TransactionController extends AbstractController
         int $limit,
         int $page,
         string $order,
-        TransactionRepository $transactionRepository
+        ?string $filter,
+        TransactionService $transactionService
     )
     {
-        $transactions = $transactionRepository->findAll();
-        $dtos = $this->responseDTOFactory->createDTOs($transactions);
+        $filters = new ListFiltersDTO($page, $limit, $order, $filter);
+        $paginator = $transactionService->getTransactionsListPaginator($filters);
 
-        // TODO:: Implement list pagination DTO
-        return $this->json([
-            'pagination' => [
-                'limit' => $limit,
-                'page' => $page,
-                'order' => [
-                    'id' => 'ASC',
-                ],
-            ],
-            'data' => $dtos,
-        ]);
+        $transactionDTOs = $this->responseDTOFactory->createDTOs($paginator->getIterator()->getArrayCopy());
+        $paginationDTO = new PaginationResponseDTO($filters->getPage(), $filters->getLimit(), $paginator->count(), $filters->getOrder());
+        $listResponseDTO = new ListResponseDTO($paginationDTO, $transactionDTOs);
+
+        return $this->json($listResponseDTO);
     }
 
     /**
@@ -77,8 +77,7 @@ class TransactionController extends AbstractController
      *
      * @throws \Doctrine\ORM\ORMException
      */
-    public
-    function create(
+    public function create(
         Request $request,
         FormErrorResponseBuilder $errorResponseBuilder,
         TransactionService $transactionService
@@ -96,6 +95,6 @@ class TransactionController extends AbstractController
         $transaction = $transactionService->createTransaction($form->getData());
         $dto = $this->responseDTOFactory->createSingleDTO($transaction);
 
-        return $this->json($dto, Response::HTTP_OK);
+        return $this->json($dto);
     }
 }

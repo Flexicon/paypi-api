@@ -4,9 +4,11 @@ namespace App\Services;
 
 
 use App\Dictionary\TransactionStatusDictionary;
+use App\DTO\Request\ListFiltersDTO;
 use App\DTO\Request\TransactionRequestDTO;
 use App\Entity\Transaction;
 use App\Repository\TransactionRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class TransactionService
 {
@@ -30,6 +32,37 @@ class TransactionService
     }
 
     /**
+     * @param ListFiltersDTO $filtersDTO
+     *
+     * @return Paginator
+     */
+    public function getTransactionsListPaginator(ListFiltersDTO $filtersDTO): Paginator
+    {
+        $page = $filtersDTO->getPage();
+        $limit = $filtersDTO->getLimit();
+        $order = $filtersDTO->getOrder();
+        $filter = $filtersDTO->getFilter();
+
+        $queryBuilder = $this->repository->createQueryBuilder('t')
+            ->orderBy('t.' . $order->getKey(), $order->getDirection());
+
+        if ($filter) {
+            $queryBuilder
+                ->andWhere('t.status = :status')
+                ->setParameter('status', $filter);
+        }
+
+        $query = $queryBuilder
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        $paginator = new Paginator($query, $fetchJoinCollection = true);
+
+        return $paginator;
+    }
+
+    /**
      * @param TransactionRequestDTO $DTO
      * @param bool $flush
      *
@@ -37,8 +70,7 @@ class TransactionService
      *
      * @throws \Doctrine\ORM\ORMException
      */
-    public
-    function createTransaction(TransactionRequestDTO $DTO, bool $flush = true): Transaction
+    public function createTransaction(TransactionRequestDTO $DTO, bool $flush = true): Transaction
     {
         // Initiate transaction entity with base data
         $transaction = (new Transaction())
@@ -55,7 +87,7 @@ class TransactionService
         $this->assignStartAndEndTimes($transaction);
         $transaction->setStatus($this->getRandomStatus());
 
-        $this->repository->saveTransaction($transaction);
+        $this->repository->saveTransaction($transaction, $flush);
 
         return $transaction;
     }
