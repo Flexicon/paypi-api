@@ -37,6 +37,9 @@ services:
   app.transaction.dto_factory:
     class: App\DTOFactory\Response\TransactionResponseDTOFactory
 
+  app.user.dto_factory:
+    class: App\DTOFactory\Response\UserResponseDTOFactory
+
   App\Controller\MethodsController:
     class: App\Controller\MethodsController
     arguments:
@@ -46,3 +49,8 @@ services:
     class: App\Controller\TransactionController
     arguments:
       - '@app.transaction.dto_factory'
+
+  App\Controller\UserController:
+    class: App\Controller\UserController
+    arguments:
+      - '@app.user.dto_factory'
