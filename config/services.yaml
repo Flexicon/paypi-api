@@ -29,17 +29,20 @@ services:
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
 
-  get_set_method_normalizer:
-    class: Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
-    public: false
-    tags: [serializer.normalizer]
-
   app.methods_provider:
     class: App\Services\MethodsFromYmlProvider
     arguments:
       - '%available_methods%'
 
+  app.transaction.dto_factory:
+    class: App\DTOFactory\Response\TransactionResponseDTOFactory
+
   App\Controller\MethodsController:
     class: App\Controller\MethodsController
     arguments:
       - '@app.methods_provider'
+
+  App\Controller\TransactionController:
+    class: App\Controller\TransactionController
+    arguments:
+      - '@app.transaction.dto_factory'
